@@ -1,0 +1,25 @@
+{
+  "datastore": {
+    "dialect": "sqlite",
+    "storage": "./database.sqlite3"
+  },
+  "garageDoor": {
+    "pins": {
+      "sensor":       5,
+      "statusOpen":   27,
+      "statusClosed": 22,
+      "doorSwitch":   4
+    }
+  },
+  "rfidReader": {
+    "pins": {
+      "data0": 18,
+      "data1": 23,
+      "greenLed": 24,
+      "redLed": 25
+    },
+    "readTimeoutMs": 100,
+    "pollTimeout": "100m",
+    "authLedTimeout": "1s"
+  }
+}
