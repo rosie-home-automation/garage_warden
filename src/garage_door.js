@@ -31,8 +31,8 @@ export default class GarageDoor {
 
   toggle() {
     console.log('Door toggled')
-    // rpio.write(this._doorSwitchPin, rpio.HIGH);
-    // setTimeout(() => { rpio.write(this._doorSwitchPin, rpio.LOW); }, 100);
+    gpio.write(this._doorSwitchPin, true);
+    setTimeout(() => { gpio.write(this._doorSwitchPin, false); }, 200);
   }
 
   open() {
@@ -57,12 +57,8 @@ export default class GarageDoor {
   };
 
   handleSensor(_pin, value) {
-    // const value = rpio.read(pin);
-    // const boolValue = !!value;
     if (this.isOpen !== value) {
       this.isOpen = value;
-      // rpio.write(this._statusOpenPin, value^1);
-      // rpio.write(this._statusClosedPin, value);
       this.#bus.emit('status', this.status(), this.isOpen);
     }
   }

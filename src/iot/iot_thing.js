@@ -15,7 +15,7 @@ import BusKeeper from '../bus_keeper';
 
 const makeThing = () => {
   const thing = new Thing(
-    'urn:dev:ops:rfid-garage-door-01',
+    'urn:dev:ops:garage-warden-01',
     'Garage Warden',
     ['DoorSensor'],
     'Rfid reader and garage door'

@@ -89,7 +89,7 @@ export default class RfidReader {
       if ((now - this.lastReadAt) < READ_TIMEOUT_NS) return;
       let data = _.map(this.data, (value) => { return DATA_MAPPING[value]; });
       this.resetData();
-      this.rfidBuffer.read(data.join(''));
+      this.#rfidBuffer.read(data.join(''));
     }
   }
 
