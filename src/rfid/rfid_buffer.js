@@ -65,6 +65,6 @@ export default class RfidBuffer {
 
   reset(context) {
     context.buffer = [];
-    this.rfidReader.handleClearBuffer();
+    context.rfidReader.handleClearBuffer();
   }
 }

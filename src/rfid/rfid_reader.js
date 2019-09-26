@@ -75,7 +75,7 @@ export default class RfidReader {
   }
 
   handleSubmitBuffer(type, data) {
-    this.bus.emit('read', type, data);
+    this.#bus.emit('read', type, data);
   }
 
   async handleClearBuffer() {
