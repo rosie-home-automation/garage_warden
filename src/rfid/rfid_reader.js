@@ -2,9 +2,10 @@ import gpio from 'rpi-gpio';
 import { promise as gpiop } from 'rpi-gpio';
 import NanoTimer from 'nanotimer';
 import _ from 'lodash';
-
 import { rfidReader as config } from 'config';
+
 import BusKeeper from '../bus_keeper';
+import logger from '../logger';
 import RfidBuffer from './rfid_buffer';
 
 const MS_TO_NS = BigInt(1e6);
@@ -24,11 +25,13 @@ export default class RfidReader {
 
   #bus;
   #authorizerBus;
+  #logger;
   #dataTimer;
   #ledTimer;
   #rfidBuffer;
 
   constructor() {
+    this.#logger = logger.child({ module: 'RfidReader'});
     this.#bus = BusKeeper.rfidReader;
     this.#authorizerBus = BusKeeper.authorizer;
     this.#dataTimer = new NanoTimer();
@@ -37,7 +40,7 @@ export default class RfidReader {
   }
 
   async start() {
-    console.log("RFID Reader Start:", config.pins);
+    this.#logger.debug({ pins: config.pins }, "RFID Reader Start");
     await this.#setupGpio(config.pins);
     this.#authorizerBus.on('authorized', this.#handleAuthorized.bind(this));
     this.#authorizerBus.on('unauthorized', this.#handleUnauthorized.bind(this));
@@ -84,7 +87,6 @@ export default class RfidReader {
 
   #check = () => {
     if (this.lastReadAt) {
-
       const now = process.hrtime.bigint();
       if ((now - this.lastReadAt) < READ_TIMEOUT_NS) return;
       let data = _.map(this.data, (value) => { return DATA_MAPPING[value]; });

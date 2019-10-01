@@ -1,8 +1,12 @@
 import BusKeeper from './bus_keeper';
+import logger from './logger';
 import db from './models';
 
 export default class Authorizer {
+  #logger;
+
   constructor() {
+    this.#logger = logger.child({ module: 'Authorizer' });
     this.bus = BusKeeper.authorizer;
     this.setupListeners();
   }
@@ -20,10 +24,12 @@ export default class Authorizer {
   }
 
   authorized(credential) {
+    this.#logger.info({ credential }, `Authorized ${credential.type} ${credential.name}`);
     this.bus.emit('authorized', credential);
   }
 
   unauthorized(type, value) {
+    this.#logger.info({ type, value }, `Unauthorized ${type} ${value}`);
     this.bus.emit('unauthorized', type, value);
   }
 }

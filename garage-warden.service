@@ -1,0 +1,15 @@
+[Unit]
+Description=Garage Warden
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/garage_warden
+ExecStart=/home/pi/garage_warden/target/release/garage_warden
+StandardOutput=null
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+Alias=garage-warden.service

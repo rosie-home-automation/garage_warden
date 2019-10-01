@@ -4,11 +4,13 @@ import BusKeeper from './bus_keeper';
 import GarageDoor from './garage_door';
 import IotThing from './iot/iot_thing';
 import RfidReader from './rfid/rfid_reader';
+import pino from 'pino';
 
+import logger from './logger';
 import db from './models';
 
 async function runApp() {
-  console.log('Starting...');
+  logger.debug('Starting...');
 
   BusKeeper.init();
   const authorizer = new Authorizer()
@@ -16,14 +18,24 @@ async function runApp() {
   const rfidReader = new RfidReader();
   const iotThing = new IotThing();
 
+  process.on('uncaughtException', pino.final(logger, (err, finalLogger) => {
+    finalLogger.error(err, 'uncaughtException');
+    process.exit(-1);
+  }));
+
+  process.on('unhandledRejection', pino.final(logger, (err, finalLogger) => {
+    finalLogger.error(err, 'unhandledRejection');
+    process.exit(-1);
+  }));
+
   process.on('SIGINT', async () => {
     try {
       await iotThing.stop();
       process.exit();
     }
     catch(e) {
-      console.error(`Error:\n\n${e.stack}`);
-      process.exit(-1);
+      logger.error({ error: e, stack: e.stack }, 'Error stopping');
+      process.exit(1);
     }
   });
 
@@ -33,10 +45,11 @@ async function runApp() {
     await rfidReader.start();
   }
   catch(e) {
-    console.error(`Error:\n\n${e.stack}`);
+    logger.error({ error: e, stack: e.stack }, 'Error');
     process.exit(-1);
   }
-  console.log('Started');
+
+  logger.info('Started');
 }
 
 runApp();

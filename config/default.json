@@ -11,15 +11,18 @@
       "doorSwitch":   4
     }
   },
+  "logging": {
+    "level": "info"
+  },
   "rfidReader": {
     "pins": {
-      "data0": 18,
-      "data1": 23,
+      "data0":    18,
+      "data1":    23,
       "greenLed": 24,
-      "redLed": 25
+      "redLed":   25
     },
-    "readTimeoutMs": 100,
-    "pollTimeout": "100m",
+    "readTimeoutMs":  100,
+    "pollTimeout":    "100m",
     "authLedTimeout": "1s"
   }
 }

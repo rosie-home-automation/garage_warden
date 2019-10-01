@@ -1,24 +1,30 @@
+import NanoTimer from 'nanotimer';
 import gpio from 'rpi-gpio';
 import { promise as gpiop } from 'rpi-gpio';
 import _ from 'lodash';
 
+import logger from './logger';
 import { garageDoor as config } from 'config';
 import BusKeeper from './bus_keeper';
 
 export default class GarageDoor {
   #authorizerBus;
   #bus;
+  #logger;
+  #sensorTimer;
 
   constructor() {
+    this.#logger = logger.child({ module: 'GarageDoor' });
     this.#bus = BusKeeper.garageDoor;
     this.#authorizerBus = BusKeeper.authorizer;
+    this.#sensorTimer = new NanoTimer();
     this.isOpen = null;
   }
 
   async start() {
-    console.log("Garage Door Start:", config.pins);
+    this.#logger.debug({ pins: config.pins }, 'Garage Door Start');
     await this.#setupGpio();
-    const currentValue = await gpiop.read(this._sensorPin)
+    const currentValue = await this.sensorValue();
     this.handleSensor(this._sensorPin, currentValue);
     gpio.on('change', this.handleSensor.bind(this));
     this.#bus.on('action', this.#handleAction);
@@ -29,8 +35,12 @@ export default class GarageDoor {
     return this.isOpen ? 'open' : 'closed';
   }
 
+  async sensorValue() {
+    return gpiop.read(this._sensorPin);
+  }
+
   toggle() {
-    console.log('Door toggled')
+    this.#logger.info({ status: this.status() }, 'Door toggled');
     gpio.write(this._doorSwitchPin, true);
     setTimeout(() => { gpio.write(this._doorSwitchPin, false); }, 200);
   }
@@ -57,8 +67,16 @@ export default class GarageDoor {
   };
 
   handleSensor(_pin, value) {
+    this.#sensorTimer.clearTimeout();
+    this.#sensorTimer.setTimeout(this.verifySensor.bind(this), [value], '250m');
+  }
+
+  async verifySensor(value) {
+    const currentValue = await this.sensorValue();
+    if (value !== currentValue) return;
     if (this.isOpen !== value) {
       this.isOpen = value;
+      this.#logger.info({ status: this.status() }, `Door ${this.status()}`);
       this.#bus.emit('status', this.status(), this.isOpen);
     }
   }
