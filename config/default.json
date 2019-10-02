@@ -12,7 +12,8 @@
     }
   },
   "logging": {
-    "level": "info"
+    "level": "info",
+    "logFilePath": "logs/garage-warden.log"
   },
   "rfidReader": {
     "pins": {

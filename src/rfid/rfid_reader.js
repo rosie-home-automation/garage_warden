@@ -40,7 +40,7 @@ export default class RfidReader {
   }
 
   async start() {
-    this.#logger.debug({ pins: config.pins }, "RFID Reader Start");
+    this.#logger.debug("RFID Reader Start", { pins: config.pins });
     await this.#setupGpio(config.pins);
     this.#authorizerBus.on('authorized', this.#handleAuthorized.bind(this));
     this.#authorizerBus.on('unauthorized', this.#handleUnauthorized.bind(this));

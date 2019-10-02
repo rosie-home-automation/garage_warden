@@ -1,2 +1,2 @@
 #!/bin/bash
-yarn start
+NODE_ENV=production yarn start

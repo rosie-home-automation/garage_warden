@@ -24,12 +24,12 @@ export default class Authorizer {
   }
 
   authorized(credential) {
-    this.#logger.info({ credential }, `Authorized ${credential.type} ${credential.name}`);
+    this.#logger.info(`Authorized ${credential.type} ${credential.name}`, { credential });
     this.bus.emit('authorized', credential);
   }
 
   unauthorized(type, value) {
-    this.#logger.info({ type, value }, `Unauthorized ${type} ${value}`);
+    this.#logger.info(`Unauthorized ${type} ${value}`, { type, value });
     this.bus.emit('unauthorized', type, value);
   }
 }

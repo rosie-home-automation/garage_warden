@@ -15,6 +15,8 @@ export default class RfidBuffer {
     };
   }
 
+  buffer;
+
   constructor(rfidReader) {
     this.rfidReader = rfidReader;
     this.buffer = [];
@@ -23,7 +25,7 @@ export default class RfidBuffer {
 
   read(data) {
     if (data.length < 8) {
-      this.reset(this);
+      this.reset();
     }
     else if (data.length === 8) {
       this.processKey(data);
@@ -35,7 +37,7 @@ export default class RfidBuffer {
 
   submitPin() {
     const bufferData = this.buffer.join('');
-    this.reset(this);
+    this.reset();
     this.rfidReader.handleSubmitBuffer(RfidBuffer.TYPES.PIN, bufferData);
   }
 
@@ -56,15 +58,15 @@ export default class RfidBuffer {
   addKey(key) {
     this.timer.clearTimeout();
     this.buffer.push(key);
-    this.timer.setTimeout(this.reset, [this], config.pin_key_timeout);
+    this.timer.setTimeout(this.reset.bind(this), null, config.pin_key_timeout);
   }
 
   processRfid(data) {
     this.rfidReader.handleSubmitBuffer(RfidBuffer.TYPES.RFID, data);
   }
 
-  reset(context) {
-    context.buffer = [];
-    context.rfidReader.handleClearBuffer();
+  reset() {
+    this.buffer = [];
+    this.rfidReader.handleClearBuffer();
   }
 }

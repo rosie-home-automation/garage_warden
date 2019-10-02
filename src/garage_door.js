@@ -22,7 +22,7 @@ export default class GarageDoor {
   }
 
   async start() {
-    this.#logger.debug({ pins: config.pins }, 'Garage Door Start');
+    this.#logger.debug('Garage Door Start', { pins: config.pins });
     await this.#setupGpio();
     const currentValue = await this.sensorValue();
     this.handleSensor(this._sensorPin, currentValue);
@@ -40,7 +40,7 @@ export default class GarageDoor {
   }
 
   toggle() {
-    this.#logger.info({ status: this.status() }, 'Door toggled');
+    this.#logger.info('Door toggled', { status: this.status() });
     gpio.write(this._doorSwitchPin, true);
     setTimeout(() => { gpio.write(this._doorSwitchPin, false); }, 200);
   }
@@ -76,7 +76,7 @@ export default class GarageDoor {
     if (value !== currentValue) return;
     if (this.isOpen !== value) {
       this.isOpen = value;
-      this.#logger.info({ status: this.status() }, `Door ${this.status()}`);
+      this.#logger.info(`Door ${this.status()}`, { status: this.status() });
       this.#bus.emit('status', this.status(), this.isOpen);
     }
   }
