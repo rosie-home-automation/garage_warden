@@ -13,6 +13,7 @@
   "dependencies": {
     "config": "^3.2.2",
     "esm": "^3.2.25",
+    "express-winston": "^4.0.1",
     "lodash": "^4.17.15",
     "nanoid": "^2.1.1",
     "nanoid-dictionary": "^2.0.0",

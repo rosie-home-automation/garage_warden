@@ -1,3 +1,4 @@
+import expressWinston from 'express-winston';
 import {
   Property,
   SingleThing,
@@ -11,6 +12,8 @@ import OpenAction from './open_action';
 import AuthorizerEvent from './authorizer_event';
 import GarageDoorEvent from './garage_door_event';
 
+import { CredentialsRouter } from '../api/v1/credentials-router';
+import { UsersRouter } from '../api/v1/users-router';
 import BusKeeper from '../bus_keeper';
 
 const makeThing = () => {
@@ -72,9 +75,14 @@ const makeThing = () => {
 };
 
 export default class IotThing {
-  constructor() {
+  constructor(logger) {
     this._thing = makeThing();
-    this._server = new WebThingServer(new SingleThing(this.thing), 8888);
+    const routerLogger = expressWinston.logger({ winstonInstance: logger });
+    const additionalRoutes = [
+      { path: '/api/v1/credentials', handler: CredentialsRouter(routerLogger)},
+      { path: '/api/v1/users', handler: UsersRouter(routerLogger)},
+    ];
+    this._server = new WebThingServer(new SingleThing(this.thing), 8888, null, null, additionalRoutes);
   }
 
   get server() {
