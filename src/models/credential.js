@@ -7,8 +7,14 @@ export default (sequelize, DataTypes) => {
       primaryKey: true,
       defaultValue: IdGenerator.id(),
     },
-    userId: DataTypes.STRING,
-    name: DataTypes.STRING,
+    userId: {
+      type: DataTypes.STRING,
+      unique: 'UUserIdName',
+    },
+    name: {
+      type: DataTypes.STRING,
+      unique: 'UUserIdName',
+    },
     type: {
       type: DataTypes.STRING,
       unique: 'UTypeValue',

@@ -14,7 +14,7 @@ async function runApp() {
   const authorizer = new Authorizer()
   const garageDoor = new GarageDoor();
   const rfidReader = new RfidReader();
-  const iotThing = new IotThing();
+  const iotThing = new IotThing(logger);
 
   process.on('SIGINT', async () => {
     try {
