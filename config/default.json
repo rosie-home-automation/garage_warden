@@ -15,6 +15,10 @@
     "level": "info",
     "logFilePath": "logs/garage-warden.log"
   },
+  "mqtt": {
+    "server": "http://192.168.7.50",
+    "topicPrefix": "homeassistant/sensor/garage_door_01"
+  },
   "rfidReader": {
     "pins": {
       "data0":    18,
